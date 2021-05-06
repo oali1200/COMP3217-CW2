@@ -91,6 +91,8 @@ void Generate_LP(int round, float *pricing, ofstream &lpfile, int *ReadyTime, in
     //Declaring variables needed
     int ReadyTimeRound;
     int FinalTimeRound;
+    int MaximumEnergyRound;
+    int EnergyDemandRound;
     string line;
     char userletter = 'a';
 
@@ -98,7 +100,7 @@ void Generate_LP(int round, float *pricing, ofstream &lpfile, int *ReadyTime, in
     //Iterates for each user creating a set of LPs per user
     for (int user = 1; user < 6; user++)
     {
-        //Creating a Linear Function describing the Energy demand of each function for user
+        //Creating a Linear Function describing the Energy demand of each function for task
         for (int task = 1; task < 11; task++)
         {
             ReadyTimeRound = ReadyTime[((user-1)*10+task-1)];
@@ -130,14 +132,16 @@ void Generate_LP(int round, float *pricing, ofstream &lpfile, int *ReadyTime, in
         {
             ReadyTimeRound = ReadyTime[((user-1)*10+task-1)];
             FinalTimeRound = Deadline[((user-1)*10+task-1)];
+            MaximumEnergyRound = MaximumEnergy[((user-1)*10+task-1)];
+            EnergyDemandRound = EnergyDemand[((user-1)*10+task-1)];
             for (int timeofday = 0; timeofday < 24; timeofday++)
             {
                 line = "";
                 if ((ReadyTimeRound <= timeofday) && (timeofday <= FinalTimeRound))
                 {
-                    line = line + std::to_string(ReadyTimeRound) + "<=";
+                    line = line + "0" + "<=";
                     line.push_back(userletter);
-                    line = line + std::to_string(task) + "_" + std::to_string(timeofday) + "<=" + std::to_string(FinalTimeRound) + ";";
+                    line = line + std::to_string(task) + "_" + std::to_string(timeofday) + "<=" + std::to_string(MaximumEnergyRound) + ";";
                     lpfile << line << endl;
                 }
             }
