@@ -37,7 +37,8 @@ int main()
     std::ifstream f4("4.txt");
     std::ifstream fp("TrainingData.txt");
     std::ifstream lpout("lpout.txt");
-    lpfile.open("lpfunction.lp");
+    finaloutput.open("finaloutput.txt", std::ofstream::out | std::ofstream::trunc);
+    finaloutput.close();
     finaloutput.open("finaloutput.txt", std::ios_base::app);
 
     //Gets the user task Data and places it into arrays
@@ -49,25 +50,28 @@ int main()
         f4 >> EnergyDemand[cnt];
     }
     // Create a for loop that iterates for each of the 10,000 pricing curves
-    // for (int round = 0; round < 10000; round++)
-    // {
-    //     //Get the pricing values for one iteration
-        
-    //     for (cnt = 0; cnt < 25; cnt++)
-    //     {
-    //         getline(fp, price,',');
-    //         pricefloat = stof(price);
-    //         pricing[cnt] = pricefloat;
-    //     }
+    for (int round = 0; round < 10000; round++)
+    {
+        //clear the lp file
+        lpfile.open("lpfunction.txt", std::ofstream::out | std::ofstream::trunc);
+        lpfile.close();
+        lpfile.open("lpfunction.lp");
+        //Get the pricing values for one iteration   
+        for (cnt = 0; cnt < 25; cnt++)
+        {
+            getline(fp, price,',');
+            pricefloat = stof(price);
+            pricing[cnt] = pricefloat;
+        }
 
-    //     //Call a function that Generates the Linear Program while feeding into it the iteration we are in so that the function can use the correct pricing guideline
-    //     Generate_LP(round, pricing, lpfile, ReadyTime, Deadline, MaximumEnergy, EnergyDemand);
-    //     //Use a system call that calls on lpsolve to run the LP
-    //     system(C:\lp\lp_solve -s lpfunction.lp >lpout.txt);
-    //     //Call a function that saves the values from the output text file made by LP solve into seperate text files
-    //     Copy_Text(lpout, finaloutput, round);
+        //Call a function that Generates the Linear Program while feeding into it the iteration we are in so that the function can use the correct pricing guideline
+        Generate_LP(round, pricing, lpfile, ReadyTime, Deadline, MaximumEnergy, EnergyDemand);
+        //Use a system call that calls on lpsolve to run the LP
+        system(C:\lp\lp_solve -s lpfunction.lp >lpout.txt);
+        //Call a function that saves the values from the output text file made by LP solve into seperate text files
+        Copy_Text(lpout, finaloutput, pricing);
 
-    // }
+    }
     for (cnt = 0; cnt < 25; cnt++)
     {
         getline(fp, price,',');
@@ -204,7 +208,6 @@ void Copy_Text(ifstream &lpout, ofstream &finaloutput, float *pricing){
     {
         lpout >> costs;
     }
-    cout << costs;
     while (!lpout.eof())
     {
         lpout >> costs;
