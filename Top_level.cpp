@@ -66,6 +66,12 @@ int main()
     //     //Call a function that saves the values from the output text file made by LP solve into seperate text files
 
     // }
+    for (cnt = 0; cnt < 25; cnt++)
+    {
+        getline(fp, price,',');
+        pricefloat = stof(price);
+        pricing[cnt] = pricefloat;
+    }
     Generate_LP(0, pricing, lpfile, ReadyTime, Deadline, MaximumEnergy, EnergyDemand);
     
     //We want to close our files here
@@ -100,8 +106,8 @@ void Generate_LP(int round, float *pricing, ofstream &lpfile, int *ReadyTime, in
             line = "";
             for (int timeofday = 0; timeofday < 24; timeofday++)
             {
-                if ((ReadyTimeRound <= timeofday) && (timeofday <= FinalTimeRound))
-                {
+                //if ((ReadyTimeRound <= timeofday) && (timeofday <= FinalTimeRound))
+                //{
                     if (line == "")
                     {
                         line.push_back(userletter);
@@ -113,7 +119,7 @@ void Generate_LP(int round, float *pricing, ofstream &lpfile, int *ReadyTime, in
                         line.push_back(userletter);
                         line = line + std::to_string(task) + "_" + std::to_string(timeofday);
                     }
-                }
+                //}
             }
             line = line + "=" + std::to_string(EnergyDemand[((user-1)*10+task-1)]) + ";";
             lpfile << line << endl;
@@ -163,33 +169,19 @@ void Generate_LP(int round, float *pricing, ofstream &lpfile, int *ReadyTime, in
         }
         lpfile << ";" << endl;
     }
-    char userletter = 'a';
     lpfile << "Cost = ";
     //Creating a Linear Function that represents the total cost
-            for (int timeofday = 0; timeofday < 24; timeofday++)
-            {
-                // userletter = 'a';
-                lpfile << pricing[timeofday] << std::to_string(timeofday + 1) << ") * (";
-                // for (int lettercounter = 0; lettercounter < 5; lettercounter++)
-                // {
-                for (int task = 1; task < 11; task++)
-                {
-                    line = "";
-                    line.push_back(userletter);
-                    lpfile << line;
-                    lpfile << std::to_string(task) << "_" << std::to_string(timeofday);
-                    if (task<10)
-                    {
-                        lpfile << " + " ;
-                    }
-                    // userletter++;
-                }
-                lpfile << ") ";
-            }
-            // fout << ";" << endl << "Cost = Cost +";
-        userletter++;
-        lpfile << endl;
-    // }
+    float price;
+    for (int timeofday = 0; timeofday < 24; timeofday++)
+    {
+        price = pricing[timeofday];
+        lpfile << to_string(price) << "*" << "c" << to_string(timeofday);
+        if (timeofday != 23)
+        {
+            lpfile << "+";  
+        }
+        
+    }
     lpfile << ";" << endl;
 }
 
