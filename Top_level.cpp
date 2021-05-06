@@ -42,6 +42,7 @@ int main()
     finaloutput.open("finaloutput.txt", std::ofstream::out | std::ofstream::trunc);
     finaloutput.close();
     finaloutput.open("finaloutput.txt", std::ios_base::app);
+    
 
     //Gets the user task Data and places it into arrays
     for (cnt = 0; cnt < 50; cnt++)
@@ -58,9 +59,9 @@ int main()
         lpfile.open("lpfunction.lp", std::ofstream::out | std::ofstream::trunc);
         lpfile.close();
         lpfile.open("lpfunction.lp", std::ofstream::out);
-        lpfile.open("lpout.txt", std::ofstream::out | std::ofstream::trunc);
-        lpfile.close();
-        lpfile.open("lpout.txt", std::ofstream::in);
+        lpout.open("lpout.txt", std::ofstream::out | std::ofstream::trunc);
+        lpout.close();
+        lpout.open("lpout.txt", std::ofstream::in);
         //Get the pricing values for one iteration   
         for (cnt = 0; cnt < 25; cnt++)
         {
@@ -72,9 +73,10 @@ int main()
         Generate_LP(pricing, lpfile, ReadyTime, Deadline, MaximumEnergy, EnergyDemand);
         //Use a system call that calls on lpsolve to run the LP
         system("C:\\lp\\lp_solve -s lpfunction.lp >lpout.txt");
-        Sleep(750);
         //Call a function that saves the values from the output text file made by LP solve into seperate text files
         Copy_Text(lpout, finaloutput, pricing);
+        lpout.close();
+        lpfile.close();
     }
     
     //We want to close our files here
