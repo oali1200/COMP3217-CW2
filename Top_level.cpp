@@ -6,6 +6,7 @@
 #include <utility> // std::pair
 #include <stdexcept> // std::runtime_error
 #include <sstream> // std::stringstream
+#include<windows.h>
 using namespace std;
 
 //Declaring a function that generates the Linear Programs
@@ -22,6 +23,7 @@ int main()
     int MaximumEnergy[50];
     int EnergyDemand[50];
     int cnt;
+    int status;
     string price;
     float pricing[25];
     float pricefloat;
@@ -53,9 +55,12 @@ int main()
     for (int round = 0; round < 10000; round++)
     {
         //clear the lp file
-        lpfile.open("lpfunction.txt", std::ofstream::out | std::ofstream::trunc);
+        lpfile.open("lpfunction.lp", std::ofstream::out | std::ofstream::trunc);
         lpfile.close();
-        lpfile.open("lpfunction.lp");
+        lpfile.open("lpfunction.lp", std::ofstream::out);
+        lpfile.open("lpout.txt", std::ofstream::out | std::ofstream::trunc);
+        lpfile.close();
+        lpfile.open("lpout.txt", std::ofstream::in);
         //Get the pricing values for one iteration   
         for (cnt = 0; cnt < 25; cnt++)
         {
@@ -63,25 +68,14 @@ int main()
             pricefloat = stof(price);
             pricing[cnt] = pricefloat;
         }
-
         //Call a function that Generates the Linear Program while feeding into it the iteration we are in so that the function can use the correct pricing guideline
-        Generate_LP(round, pricing, lpfile, ReadyTime, Deadline, MaximumEnergy, EnergyDemand);
+        Generate_LP(pricing, lpfile, ReadyTime, Deadline, MaximumEnergy, EnergyDemand);
         //Use a system call that calls on lpsolve to run the LP
-        system(C:\lp\lp_solve -s lpfunction.lp >lpout.txt);
+        system("C:\\lp\\lp_solve -s lpfunction.lp >lpout.txt");
+        Sleep(750);
         //Call a function that saves the values from the output text file made by LP solve into seperate text files
         Copy_Text(lpout, finaloutput, pricing);
-
     }
-    for (cnt = 0; cnt < 25; cnt++)
-    {
-        getline(fp, price,',');
-        pricefloat = stof(price);
-        pricing[cnt] = pricefloat;
-    }
-    Generate_LP(pricing, lpfile, ReadyTime, Deadline, MaximumEnergy, EnergyDemand);
-    system("C:\\lp\\lp_solve -s lpfunction.lp >lpout.txt");
-    //Call a function that saves the values from the output text file made by LP solve into seperate text files
-    Copy_Text(lpout, finaloutput, pricing);
     
     //We want to close our files here
     f1.close();
