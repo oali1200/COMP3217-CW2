@@ -9,9 +9,9 @@
 using namespace std;
 
 //Declaring a function that generates the Linear Programs
-void Generate_LP(int round, float *pricing, ofstream &lpfile, int *ReadyTime, int *Deadline, int *MaximumEnergy, int *EnergyDemand);
+void Generate_LP(float *pricing, ofstream &lpfile, int *ReadyTime, int *Deadline, int *MaximumEnergy, int *EnergyDemand);
 //Declaring a function that saves the values from the output text file
-void Copy_Text(ifstream &lpout, ofstream &finaloutput);
+void Copy_Text(ifstream &lpout, ofstream &finaloutput, float *pricing);
 
 int main()
 {
@@ -37,8 +37,8 @@ int main()
     std::ifstream f4("4.txt");
     std::ifstream fp("TrainingData.txt");
     std::ifstream lpout("lpout.txt");
-    lpfile.open("output.txt");
-    finaloutput.open("finaloutput.txt");
+    lpfile.open("lpfunction.lp");
+    finaloutput.open("finaloutput.txt", std::ios_base::app);
 
     //Gets the user task Data and places it into arrays
     for (cnt = 0; cnt < 50; cnt++)
@@ -48,8 +48,8 @@ int main()
         f3 >> MaximumEnergy[cnt];
         f4 >> EnergyDemand[cnt];
     }
-    //Create a for loop that iterates for each of the 10,000 pricing curves
-    // for (size_t round = 0; round < 10000; round++)
+    // Create a for loop that iterates for each of the 10,000 pricing curves
+    // for (int round = 0; round < 10000; round++)
     // {
     //     //Get the pricing values for one iteration
         
@@ -63,7 +63,9 @@ int main()
     //     //Call a function that Generates the Linear Program while feeding into it the iteration we are in so that the function can use the correct pricing guideline
     //     Generate_LP(round, pricing, lpfile, ReadyTime, Deadline, MaximumEnergy, EnergyDemand);
     //     //Use a system call that calls on lpsolve to run the LP
+    //     system(C:\lp\lp_solve -s lpfunction.lp >lpout.txt);
     //     //Call a function that saves the values from the output text file made by LP solve into seperate text files
+    //     Copy_Text(lpout, finaloutput, round);
 
     // }
     for (cnt = 0; cnt < 25; cnt++)
@@ -72,7 +74,10 @@ int main()
         pricefloat = stof(price);
         pricing[cnt] = pricefloat;
     }
-    Generate_LP(0, pricing, lpfile, ReadyTime, Deadline, MaximumEnergy, EnergyDemand);
+    Generate_LP(pricing, lpfile, ReadyTime, Deadline, MaximumEnergy, EnergyDemand);
+    system("C:\\lp\\lp_solve -s lpfunction.lp >lpout.txt");
+    //Call a function that saves the values from the output text file made by LP solve into seperate text files
+    Copy_Text(lpout, finaloutput, pricing);
     
     //We want to close our files here
     f1.close();
@@ -87,7 +92,7 @@ int main()
 }
 
 //Create a function that generates the Linear Programs
-void Generate_LP(int round, float *pricing, ofstream &lpfile, int *ReadyTime, int *Deadline, int *MaximumEnergy, int *EnergyDemand){
+void Generate_LP(float *pricing, ofstream &lpfile, int *ReadyTime, int *Deadline, int *MaximumEnergy, int *EnergyDemand){
     //Declaring variables needed
     int ReadyTimeRound;
     int FinalTimeRound;
@@ -190,6 +195,34 @@ void Generate_LP(int round, float *pricing, ofstream &lpfile, int *ReadyTime, in
 }
 
 //Create a function that saves the values from the output text file
-void Copy_Text(ifstream lpout, ofstream finaloutput){
-
+void Copy_Text(ifstream &lpout, ofstream &finaloutput, float *pricing){
+    string cost;
+    string costs;
+    string c[24] = {};
+    string intermediate[25] = {};
+    for (size_t i = 0; i < 12; i++)
+    {
+        lpout >> costs;
+    }
+    cout << costs;
+    while (!lpout.eof())
+    {
+        lpout >> costs;
+        if (costs == "c0")
+        {
+            for (int j = 0; j < 24; j++)
+            {
+                lpout >> costs;
+                c[j] = costs;
+                lpout >> costs;
+            }
+        }
+        
+    }
+    for (int i = 0; i < 24; i++)
+    {
+        finaloutput << c[i] << ",";
+    }
+    int validity = (int)pricing[24];
+    finaloutput << to_string(validity) << endl;
 }
