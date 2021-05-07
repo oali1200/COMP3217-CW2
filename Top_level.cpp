@@ -53,7 +53,7 @@ int main()
         f4 >> EnergyDemand[cnt];
     }
     // Create a for loop that iterates for each of the 10,000 pricing curves
-    for (int round = 0; round < 10000; round++)
+    for (int i = 0; i < 10000; i++)
     {
         //clear the lp file
         lpfile.open("lpfunction.lp", std::ofstream::out | std::ofstream::trunc);
@@ -149,6 +149,11 @@ void Generate_LP(float *pricing, ofstream &lpfile, int *ReadyTime, int *Deadline
                     line = line + std::to_string(task) + "_" + std::to_string(timeofday) + "<=" + std::to_string(MaximumEnergyRound) + ";";
                     lpfile << line << endl;
                 }
+                else{
+                    line.push_back(userletter);
+                    line = line + std::to_string(task) + "_" + std::to_string(timeofday) + "=0;";
+                    lpfile << line << endl;
+                }
             }
         }
         userletter++;
@@ -204,6 +209,7 @@ void Copy_Text(ifstream &lpout, ofstream &finaloutput, float *pricing){
     {
         lpout >> costs;
     }
+    finaloutput << costs << ",";
     while (!lpout.eof())
     {
         lpout >> costs;
