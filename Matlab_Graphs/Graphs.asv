@@ -1,5 +1,0 @@
-Pricing = readtable('finaloutput.txt');
-for c = 1:5000
-    x = 0:23;
-    y = [
-end
