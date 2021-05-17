@@ -1,6 +1,5 @@
 Pricing = readtable('finaloutput.txt');
-
-for c = 0:4999
+for c = 1:5000
     x = 0:23;
-    y = Pricing(c,2:25);
+    y = [
 end

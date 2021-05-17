@@ -53,7 +53,7 @@ int main()
         f4 >> EnergyDemand[cnt];
     }
     // Create a for loop that iterates for each of the 10,000 pricing curves
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 10000; i++)
     {
         //clear the lp file
         lpfile.open("lpfunction.lp", std::ofstream::out | std::ofstream::trunc);
