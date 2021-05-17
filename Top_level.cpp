@@ -53,7 +53,7 @@ int main()
         f4 >> EnergyDemand[cnt];
     }
     // Create a for loop that iterates for each of the 10,000 pricing curves
-    for (int i = 0; i < 10000; i++)
+    for (int i = 0; i < 10; i++)
     {
         //clear the lp file
         lpfile.open("lpfunction.lp", std::ofstream::out | std::ofstream::trunc);
@@ -63,12 +63,15 @@ int main()
         lpout.close();
         lpout.open("lpout.txt", std::ofstream::in);
         //Get the pricing values for one iteration   
-        for (cnt = 0; cnt < 25; cnt++)
+        for (cnt = 0; cnt < 24; cnt++)
         {
             getline(fp, price,',');
             pricefloat = stof(price);
             pricing[cnt] = pricefloat;
         }
+        getline(fp, price,'\n');
+        pricefloat = stof(price);
+        pricing[24] = pricefloat;
         //Call a function that Generates the Linear Program while feeding into it the iteration we are in so that the function can use the correct pricing guideline
         Generate_LP(pricing, lpfile, ReadyTime, Deadline, MaximumEnergy, EnergyDemand);
         //Use a system call that calls on lpsolve to run the LP
