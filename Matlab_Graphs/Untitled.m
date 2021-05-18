@@ -1,15 +1,19 @@
-Pricing = readtable('finaloutput.txt');
+Pricing = readtable('finaltestingoutput.txt');
 
 Pa = table2array(Pricing);
 
 
-x1 = ones(5000,1);
-x2 = 0 * ones(5000,1);
+x1 = ones(98,1);
+x2 = 0 * ones(2,1);
+for j = 2:69
+    y1(j-1) = Pa(j,1);
+end
+for j = 71:100
+    y1(j-2) = Pa(j,1);
+end
+y3 = [Pa(70,1), Pa(1,1)];
 
-y1 = Pa(1:5000,1);
-y2 = Pa(5001:10000,1);
-
-x = [x1 x2];
-y = [y2 y1];
 c = 'blue';
-s = swarmchart(x,y,10,c);
+swarmchart(x1,y1,10,c);
+hold on;
+swarmchart(x2,y3,10,c);
