@@ -1,1 +1,0 @@
-github.com/oali1200/COMP3217-CW2/ To access the git repository

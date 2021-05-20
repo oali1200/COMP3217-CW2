@@ -1,0 +1,3 @@
+github.com/oali1200/COMP3217-CW2/ To access the git repository
+https://colab.research.google.com/drive/180PK4ZIUwljoZykJRf5pcayOCpN2LYuv?usp=sharing to access the classification draft
+https://colab.research.google.com/drive/1wOaW9l255LDToxOoDoKhZQvgX6pOv5LL?usp=sharing to access the classification final files
